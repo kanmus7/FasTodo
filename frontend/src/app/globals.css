@@ -10,7 +10,7 @@ body {
   margin: 0;
   padding: 0;
   height: 100%;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: "Inter", "Inter Fallback", system-ui, sans-serif;
   background-color: #fff;
   color: #111;
   -webkit-font-smoothing: antialiased;
@@ -32,4 +32,15 @@ a {
 
 button {
   cursor: pointer;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+title,
+p {
+  cursor: default;
 }
