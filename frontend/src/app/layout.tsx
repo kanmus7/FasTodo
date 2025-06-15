@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import ThemeRegistry from "./ThemeRegistry";
+import Header from "./components/Header";
+import { SnackbarProvider } from "./components/SnackbarContext";
+import { Box } from "@mui/material";
+import { AuthProvider } from "./components/AuthContext";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -21,7 +25,26 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.variable} antialiased`}>
-        <ThemeRegistry>{children}</ThemeRegistry>
+        <AuthProvider>
+          <ThemeRegistry>
+            <SnackbarProvider>
+              <Header />
+              <Box
+                component="main"
+                sx={{
+                  minHeight: "calc(100vh - 64px)",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  background: "linear-gradient(to right, #e3f2fd, #fce4ec)",
+                  paddingBottom: 8,
+                }}
+              >
+                {children}
+              </Box>
+            </SnackbarProvider>
+          </ThemeRegistry>
+        </AuthProvider>
       </body>
     </html>
   );

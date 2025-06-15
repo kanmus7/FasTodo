@@ -11,6 +11,8 @@ import {
 } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
 import { SetStateAction, useEffect, useState } from "react";
+import { useSnackbar } from "./SnackbarContext";
+import { useAuth } from "./AuthContext";
 
 const style = {
   position: "absolute" as const,
@@ -41,10 +43,11 @@ export default function AuthModal({
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [disabledButton, setDisabledButton] = useState<boolean>(true);
+  const { showMessage } = useSnackbar();
+  const { login } = useAuth();
 
   const handleSubmit = async () => {
     const endpoint = type === "register" ? "/auth/register" : "/auth/login";
-
     const payload =
       type === "register" ? { name, email, password } : { email, password };
 
@@ -63,13 +66,17 @@ export default function AuthModal({
       }
 
       const data = await res.json();
-      localStorage.setItem("token", data.access_token);
-
+      if (type === "login") {
+        login(data.access_token);
+        showMessage("Logged in successfully!", "success");
+      } else {
+        showMessage("Registered successfully. You can now log in.", "success");
+      }
       onClose();
     } catch (error) {
       const err = error as Error;
       console.error("Error:", err.message);
-      //Snackbar
+      showMessage(err.message, "error");
     } finally {
       setModalOpen(false);
       setEmail("");
