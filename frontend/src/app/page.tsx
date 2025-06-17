@@ -1,20 +1,7 @@
 "use client";
 import { Container, Typography } from "@mui/material";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 
 export default function Home() {
-  const router = useRouter();
-
-  useEffect(() => {
-    const hasToken = document.cookie
-      .split(";")
-      .some((cookie) => cookie.trim().startsWith("token="));
-    if (hasToken) {
-      router.push("/tasks");
-    }
-  }, [router]);
-
   return (
     <Container sx={{ textAlign: "center" }}>
       <Typography variant="h1" gutterBottom fontWeight="bold">

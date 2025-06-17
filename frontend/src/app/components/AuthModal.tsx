@@ -44,7 +44,7 @@ export default function AuthModal({
   const [name, setName] = useState("");
   const [disabledButton, setDisabledButton] = useState<boolean>(true);
   const { showMessage } = useSnackbar();
-  const { login } = useAuth();
+  const { login, isPending } = useAuth();
 
   const handleSubmit = async () => {
     const endpoint = type === "register" ? "/auth/register" : "/auth/login";
@@ -135,7 +135,11 @@ export default function AuthModal({
             onClick={handleSubmit}
             disabled={disabledButton}
           >
-            {type === "login" ? "Login" : "Register"}
+            {isPending
+              ? "Redirecting..."
+              : type === "login"
+              ? "Login"
+              : "Register"}
           </Button>
         </Stack>
       </Box>

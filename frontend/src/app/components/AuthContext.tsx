@@ -7,6 +7,7 @@ import {
   useEffect,
   useMemo,
   useState,
+  useTransition,
 } from "react";
 import { useRouter } from "next/navigation";
 
@@ -14,12 +15,14 @@ type AuthContextType = {
   isAuthenticated: boolean;
   login: (token: string) => void;
   logout: () => void;
+  isPending: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
 
   useEffect(() => {
@@ -33,7 +36,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
     (token: string) => {
       document.cookie = `token=${token}; path=/; max-age=3600`;
       setIsAuthenticated(true);
-      router.push("/tasks");
+      startTransition(() => {
+        router.push("/tasks");
+      });
     },
     [router]
   );
@@ -41,7 +46,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const logout = useCallback(() => {
     document.cookie = "token=; path=/; max-age=0";
     setIsAuthenticated(false);
-    router.push("/");
+    startTransition(() => {
+      router.push("/");
+    });
   }, [router]);
 
   const contextValues = useMemo(() => {
@@ -49,8 +56,9 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       login,
       logout,
       isAuthenticated,
+      isPending,
     };
-  }, [isAuthenticated, login, logout]);
+  }, [isAuthenticated, login, logout, isPending]);
 
   return (
     <AuthContext.Provider value={contextValues}>
